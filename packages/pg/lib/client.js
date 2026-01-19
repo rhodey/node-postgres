@@ -407,8 +407,14 @@ class Client extends EventEmitter {
   }
 
   _handleRowDescription(msg) {
+    const activeQuery = this._getActiveQuery()
+    if (!activeQuery) {
+      const error = new Error('Received unexpected rowDescription message from backend.')
+      this._handleErrorEvent(error)
+      return
+    }
     // delegate rowDescription to active query
-    this._getActiveQuery().handleRowDescription(msg)
+    activeQuery.handleRowDescription(msg)
   }
 
   _handleDataRow(msg) {
